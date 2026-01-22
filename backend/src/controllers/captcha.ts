@@ -18,10 +18,6 @@ if (!loginPage || !captchaUrl) {
 const captcha = asyncHandler(async (req, res) => {
   let sessionId = req.headers["x-session-id"] as string;
 
-  if (sessionId) {
-    deleteSession(sessionId);
-  }
-
   sessionId = createSession();
   const session = getSession(sessionId);
 
