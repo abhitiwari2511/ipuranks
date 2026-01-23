@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import useCaptcha from "@/hooks/useCaptcha";
 import useLogin from "@/hooks/useLogin";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   rollNo: z
@@ -45,6 +46,7 @@ const LoginForm = () => {
     refreshCaptcha,
   } = useCaptcha();
   const { login, loading: loginLoading } = useLogin(sessionId);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,7 +64,11 @@ const LoginForm = () => {
       toast.success("Login successful!", {
         description: "Redirecting to dashboard...",
       });
-      // Handle successful login (e.g., redirect, store token, etc.)
+      navigate("/results", {
+        state: {
+          resultData: response.data.result,
+        },
+      });
     } else {
       // Refresh captcha on failed login
       await refreshCaptcha();
