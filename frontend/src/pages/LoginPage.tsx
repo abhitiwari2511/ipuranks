@@ -1,11 +1,11 @@
-import LoginForm from "@/components/LoginForm"
+import LoginForm from "@/components/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-        <LoginForm />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950">
+      <LoginForm />
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

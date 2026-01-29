@@ -72,4 +72,20 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-export default loginUser;
+const logoutUser = asyncHandler(async (req, res) => {
+  const sessionId = req.headers["x-session-id"] as string;
+  const session = getSession(sessionId);
+  if (session) {
+    const client = wrapper(
+      axios.create({
+        jar: session.jar,
+        withCredentials: true,
+      }),
+    );
+  }
+
+  deleteSession(sessionId);
+  res.status(200).json({ success: true, message: "Logged out successfully" });
+});
+
+export { logoutUser, loginUser };

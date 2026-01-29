@@ -64,7 +64,7 @@ const LoginForm = () => {
       toast.success("Login successful!", {
         description: "Redirecting to dashboard...",
       });
-      navigate("/results", {
+      navigate("/result", {
         state: {
           resultData: response.data.result,
         },
@@ -83,7 +83,9 @@ const LoginForm = () => {
   return (
     <Card className="w-full sm:max-w-md">
       <CardHeader>
-        <CardTitle>IPU RANKS</CardTitle>
+        <CardTitle className="bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          IPU RANKS
+        </CardTitle>
         <CardDescription>
           Enter your credentials to view your results.
         </CardDescription>
@@ -149,7 +151,7 @@ const LoginForm = () => {
                       autoComplete="off"
                       className="flex-1"
                     />
-                    <div className="w-32 h-12 bg-muted rounded-md flex items-center justify-center text-muted-foreground text-sm border">
+                    <div className="w-32 h-12 bg-zinc-800 rounded-md flex items-center justify-center text-zinc-400 text-sm border border-zinc-700">
                       {captchaLoading ? (
                         "Loading..."
                       ) : captchaImage ? (
@@ -168,7 +170,7 @@ const LoginForm = () => {
                       size="icon"
                       onClick={refreshCaptcha}
                       disabled={captchaLoading}
-                      className="h-12 w-12 shrink-0"
+                      className="h-12 w-12 shrink-0 border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
                       title="Refresh captcha"
                     >
                       <RefreshCw
@@ -189,7 +191,7 @@ const LoginForm = () => {
         <Button
           type="submit"
           form="login-form"
-          className="w-full"
+          className="w-full bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white"
           disabled={loginLoading || captchaLoading}
         >
           {loginLoading ? "Logging in..." : "Login"}
