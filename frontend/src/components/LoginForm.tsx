@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -61,8 +60,9 @@ const LoginForm = () => {
     const response = await login(data);
 
     if (response?.data.success) {
-      toast.success("Login successful!", {
-        description: "Redirecting to dashboard...",
+      toast.success("Welcome back!", {
+        description: "Analyzing your academic performance...",
+        duration: 3000,
       });
       navigate("/result", {
         state: {
@@ -71,132 +71,159 @@ const LoginForm = () => {
       });
     } else {
       // Refresh captcha on failed login
-      await refreshCaptcha();
-      form.reset({
-        rollNo: data.rollNo,
-        password: data.password,
-        captcha: "",
+      toast.error("Login failed", {
+        description: "Please check your credentials and try again.",
       });
+      await refreshCaptcha();
+      form.setValue("captcha", "");
     }
   };
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle className="bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-          IPU RANKS
+    <Card className="w-full bg-zinc-900 border-zinc-800 shadow-xl overflow-hidden">
+      <CardHeader className="space-y-1 text-center py-3">
+        <CardTitle className="text-4xl font-bold text-white">
+          Student Login
         </CardTitle>
-        <CardDescription>
-          Enter your credentials to view your results.
+        <CardDescription className="text-zinc-500 text-sm">
+          Access your comprehensive result dashboard
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <CardContent className="px-4 pb-4">
+        <form
+          id="login-form"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2"
+        >
           <FieldGroup>
             <Controller
               name="rollNo"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="login-rollNo">
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="space-y-0.5"
+                >
+                  <FieldLabel className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
                     Enrollment Number
                   </FieldLabel>
                   <Input
                     {...field}
                     id="login-rollNo"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your enrollment number"
                     autoComplete="username"
+                    placeholder="Enter enrollment number"
+                    className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all font-mono"
                   />
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError
+                      errors={[fieldState.error]}
+                      className="text-red-400 text-[10px]"
+                    />
                   )}
                 </Field>
               )}
             />
+
             <Controller
               name="password"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="login-password">Password</FieldLabel>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="space-y-0.5"
+                >
+                  <FieldLabel className="text-[10px] -mt-2 font-medium uppercase tracking-wider text-zinc-500">
+                    Password
+                  </FieldLabel>
                   <Input
                     {...field}
                     id="login-password"
-                    type="password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your password"
                     autoComplete="current-password"
+                    type="password"
+                    placeholder="••••••••"
+                    className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all"
                   />
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError
+                      errors={[fieldState.error]}
+                      className="text-red-400 text-[10px]"
+                    />
                   )}
                 </Field>
               )}
             />
+
             <Controller
               name="captcha"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="login-captcha">
-                    Captcha Verification
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="space-y-0.5"
+                >
+                  <FieldLabel className="text-[10px] -mt-2 font-medium uppercase tracking-wider text-zinc-500">
+                    Security Check
                   </FieldLabel>
-                  <div className="flex gap-2 items-center">
+                  <div className="flex gap-2">
                     <Input
                       {...field}
                       id="login-captcha"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter captcha"
-                      autoComplete="off"
-                      className="flex-1"
+                      placeholder="Enter Captcha"
+                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all flex-1 font-mono uppercase tracking-widest text-center"
+                      maxLength={6}
                     />
-                    <div className="w-32 h-12 bg-zinc-800 rounded-md flex items-center justify-center text-zinc-400 text-sm border border-zinc-700">
+                    <div className="relative group shrink-0">
                       {captchaLoading ? (
-                        "Loading..."
-                      ) : captchaImage ? (
-                        <img
-                          src={captchaImage}
-                          alt="Captcha"
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="w-25 h-9 rounded-md bg-zinc-800 animate-pulse" />
                       ) : (
-                        "Captcha Image"
+                        <div className="relative overflow-hidden rounded-md border border-zinc-800 bg-white">
+                          <img
+                            src={captchaImage || ""}
+                            alt="Captcha"
+                            className="h-9 w-25 object-cover opacity-90"
+                          />
+                        </div>
                       )}
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="absolute -right-2 -top-2 h-8 w-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={refreshCaptcha}
+                        disabled={captchaLoading}
+                      >
+                        <RefreshCw
+                          className={`h-2.5 w-2.5 ${captchaLoading ? "animate-spin" : ""}`}
+                        />
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={refreshCaptcha}
-                      disabled={captchaLoading}
-                      className="h-12 w-12 shrink-0 border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                      title="Refresh captcha"
-                    >
-                      <RefreshCw
-                        className={`h-4 w-4 ${captchaLoading ? "animate-spin" : ""}`}
-                      />
-                    </Button>
                   </div>
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError
+                      errors={[fieldState.error]}
+                      className="text-red-400 text-[10px]"
+                    />
                   )}
                 </Field>
               )}
             />
           </FieldGroup>
+
+          <Button
+            type="submit"
+            className="w-full bg-white hover:bg-zinc-200 mt-5 text-zinc-950 font-bold text-sm h-9 transition-all active:scale-[0.98]"
+            disabled={loginLoading}
+          >
+            {loginLoading ? (
+              <span className="flex items-center gap-2">
+                <RefreshCw className="h-3 w-3 animate-spin" /> Verifying...
+              </span>
+            ) : (
+              "Access Dashboard"
+            )}
+          </Button>
         </form>
       </CardContent>
-      <CardFooter>
-        <Button
-          type="submit"
-          form="login-form"
-          className="w-full bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white"
-          disabled={loginLoading || captchaLoading}
-        >
-          {loginLoading ? "Logging in..." : "Login"}
-        </Button>
-      </CardFooter>
     </Card>
   );
 };
