@@ -14,17 +14,9 @@ const Navbar = () => {
             IPU Ranks
           </span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
           <Link to="/login">
-            <Button
-              variant="ghost"
-              className="text-zinc-400 hover:text-white hover:bg-zinc-900"
-            >
-              Sign In
-            </Button>
-          </Link>
-          <Link to="/login">
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full px-6 shadow-lg shadow-emerald-500/20 transition-all">
+            <Button className="bg-emerald-500 cursor-pointer hover:bg-emerald-600 text-white rounded-full px-6 shadow-lg shadow-emerald-500/20 transition-all">
               Get Started
             </Button>
           </Link>

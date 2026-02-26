@@ -55,25 +55,19 @@ const PerformanceCharts = ({
       transition={{ duration: 0.3 }}
       className="grid grid-cols-1 lg:grid-cols-2 gap-6"
     >
-      {/* chart */}
+      {/* Percentage Trend Chart */}
       <Card className="shadow-xl hover:shadow-2xl transition-all bg-zinc-900 border-zinc-800">
         <CardHeader className="pb-2">
           <CardTitle className="text-xl font-semibold text-white">
-            Performance Trend
+            Percentage Trend
           </CardTitle>
           <CardDescription className="text-zinc-500">
-            SGPA and Percentage across semesters
+            Percentage across semesters
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={lineChartData}>
-              <defs>
-                <linearGradient id="sgpaGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#a78bfa" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
-                </linearGradient>
-              </defs>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="#27272a"
@@ -121,6 +115,59 @@ const PerformanceCharts = ({
                   strokeWidth: 2,
                   fill: "#18181b",
                 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* SGPA Trend Chart */}
+      <Card className="shadow-xl hover:shadow-2xl transition-all bg-zinc-900 border-zinc-800">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl font-semibold text-white">
+            SGPA Trend
+          </CardTitle>
+          <CardDescription className="text-zinc-500">
+            SGPA across semesters (out of 10)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={lineChartData}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#27272a"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="name"
+                stroke="#52525b"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="#52525b"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                domain={[0, 10]}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#18181b",
+                  border: "1px solid #27272a",
+                  borderRadius: "12px",
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                }}
+                labelStyle={{ color: "#a1a1aa", fontWeight: 600 }}
+                itemStyle={{ color: "#e4e4e7" }}
+              />
+              <Legend
+                wrapperStyle={{ paddingTop: "20px" }}
+                formatter={(value) => (
+                  <span style={{ color: "#a1a1aa" }}>{value}</span>
+                )}
               />
               <Line
                 type="monotone"

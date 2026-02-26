@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { RefreshCw } from "lucide-react";
+import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,8 +26,8 @@ import { useNavigate } from "react-router-dom";
 const formSchema = z.object({
   rollNo: z
     .string()
-    .min(3, "Username must be at least 3 characters.")
-    .max(32, "Username must be at most 32 characters."),
+    .min(3, "roll no must be at least 3 characters.")
+    .max(32, "roll no must be at most 32 characters."),
   password: z
     .string()
     .min(6, "Password must be at least 6 characters.")
@@ -46,6 +47,7 @@ const LoginForm = () => {
   } = useCaptcha();
   const { login, loading: loginLoading } = useLogin(sessionId);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -135,14 +137,31 @@ const LoginForm = () => {
                   <FieldLabel className="text-[10px] -mt-2 font-medium uppercase tracking-wider text-zinc-500">
                     Password
                   </FieldLabel>
-                  <Input
-                    {...field}
-                    id="login-password"
-                    autoComplete="current-password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all"
-                  />
+                  <div className="relative flex w-full">
+                    <Input
+                      {...field}
+                      id="login-password"
+                      autoComplete="current-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute cursor-pointer right-0 top-0 h-9 w-9 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
+                      tabIndex={-1}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {fieldState.invalid && (
                     <FieldError
                       errors={[fieldState.error]}
@@ -188,7 +207,7 @@ const LoginForm = () => {
                         type="button"
                         size="icon"
                         variant="ghost"
-                        className="absolute -right-2 -top-2 h-8 w-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute cursor-pointer -right-2 -top-2 h-8 w-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={refreshCaptcha}
                         disabled={captchaLoading}
                       >
