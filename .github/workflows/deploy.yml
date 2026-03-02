@@ -1,0 +1,51 @@
+name: Deploy my app on vps
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - "backend/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build the app
+        working-directory: backend
+        run: npx tsc -b
+
+      - name: Copy dist files to VPS
+        uses: appleboy/scp-action@0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "backend/dist,backend/package.json,backend/package-lock.json"
+          target: "/home/abhit2511/ipuranks/backend"
+          strip_components: 1
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@1.2.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/abhit2511/ipuranks/backend
+            npm ci --omit=dev
+            pm2 reload ecosystem.config.js
