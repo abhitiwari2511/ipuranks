@@ -36,7 +36,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const form = new URLSearchParams();
   form.append("username", rollNo);
   form.append("passwd", hashedPassword);
-  form.append("captcha", captcha.toUpperCase());
+  form.append("captcha", captcha);
 
   // post data login krne ke liye
   const respone = await client.post(`${baseUrl}/Login`, form.toString(), {
