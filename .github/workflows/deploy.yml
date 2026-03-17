@@ -15,39 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        working-directory: backend
-        run: npm ci
-
-      - name: Build the app
-        working-directory: backend
-        run: npx tsc -b
-
-      - name: Clean old dist on VPS
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script: rm -rf /home/abhit2511/ipuranks/backend/dist
-
-      - name: Copy dist files to VPS
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "backend/dist,backend/package.json,backend/package-lock.json"
-          target: "/home/abhit2511/ipuranks/backend"
-          strip_components: 1
-
-      - name: Deploy to VPS
+      - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -55,9 +23,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            source "$NVM_DIR/nvm.sh"
-            nvm use default
             cd /home/abhit2511/ipuranks/backend
-            npm ci --omit=dev
+            git pull
+            npm install
+            tsc -b
             pm2 reload ecosystem.config.cjs
