@@ -45,6 +45,7 @@ const useLogin = (sessionId: string) => {
         return null;
       }
       setData(response.data);
+      console.log("finalData:", response.data.result);
       return response;
     } catch (err: unknown) {
       const error =

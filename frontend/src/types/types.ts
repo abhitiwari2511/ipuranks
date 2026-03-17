@@ -19,6 +19,7 @@ export interface SubjectResult {
   ryear: number;
   declareddate: string;
   eugpa: number;
+  credits: number;
 }
 
 export interface SemesterData {

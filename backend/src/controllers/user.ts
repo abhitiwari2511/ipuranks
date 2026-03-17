@@ -6,6 +6,57 @@ import axios from "axios";
 
 const baseUrl = process.env.BASE_URL;
 
+// new api so that response subject[] ke form me jaaye
+interface NewApiResponse {
+  report: string;
+  stprofile: {
+    nrollno: string;
+    stname: string;
+    byoa: number;
+    yoa: number;
+    prgcode: string;
+    prgname: string;
+    icode: string;
+    iname: string;
+  };
+  header: string[];
+  stresult: (string | number)[][];
+}
+
+const transformApiResponse = (apiData: NewApiResponse) => {
+  const { stprofile, stresult } = apiData;
+
+  return stresult.map((row) => {
+    // exam month and year ko alag karke parse karna
+    const examParts = String(row[7]).split(",");
+    const rmonth = parseInt(examParts[0] ?? "0") || 0;
+    const ryear = parseInt(examParts[1] ?? "0") || 0;
+
+    return {
+      nrollno: stprofile.nrollno,
+      stname: stprofile.stname,
+      byoa: stprofile.byoa,
+      yoa: stprofile.yoa,
+      prgcode: stprofile.prgcode,
+      prgname: stprofile.prgname,
+      icode: stprofile.icode,
+      iname: stprofile.iname,
+      euno: Number(row[0]),
+      papercode: String(row[1]),
+      papername: String(row[2]),
+      minorprint: String(row[3]),
+      majorprint: String(row[4]),
+      moderatedprint: String(row[5]),
+      statuscode: String(row[6]),
+      rmonth,
+      ryear,
+      declareddate: String(row[8]),
+      eugpa: 0,
+      credits: 0, //frontend pe dekhna hai ye
+    };
+  });
+};
+
 const loginUser = asyncHandler(async (req, res) => {
   const sessionId = req.headers["x-session-id"] as string;
   const session = getSession(sessionId);
@@ -18,7 +69,7 @@ const loginUser = asyncHandler(async (req, res) => {
     axios.create({
       jar: session.jar,
       withCredentials: true,
-    })
+    }),
   );
 
   const { rollNo, password, captcha } = req.body;
@@ -66,9 +117,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
   deleteSession(sessionId);
 
+  const transformedResult = transformApiResponse(result.data);
+
   res.status(200).json({
     success: true,
-    result: result.data,
+    result: transformedResult,
   });
 });
 

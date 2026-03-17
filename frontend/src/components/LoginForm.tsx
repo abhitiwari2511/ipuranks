@@ -188,8 +188,7 @@ const LoginForm = () => {
                       {...field}
                       id="login-captcha"
                       placeholder="Enter Captcha"
-                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all flex-1 font-mono uppercase tracking-widest text-center"
-                      maxLength={6}
+                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all flex-1 font-mono tracking-widest text-center"
                     />
                     <div className="relative group shrink-0">
                       {captchaLoading ? (
@@ -199,7 +198,7 @@ const LoginForm = () => {
                           <img
                             src={captchaImage || ""}
                             alt="Captcha"
-                            className="h-9 w-25 object-cover opacity-90"
+                            className="h-9 w-28 -mr-1 ml-1 object-cover opacity-90"
                           />
                         </div>
                       )}

@@ -4,9 +4,37 @@ import type {
   CumulativeData,
 } from "@/types/types";
 import { calculateProgressiveCGPA } from "./cgpaUtils";
+import subjectCreditsData from "@/data/subjectCredits.json";
+
+const subjectCredits: Record<string, number> = subjectCreditsData;
+
+//total marks to IPU grade point
+export const marksToGradePoint = (marks: number): number => {
+  if (marks >= 90) return 10;
+  if (marks >= 75) return 9;
+  if (marks >= 65) return 8;
+  if (marks >= 55) return 7;
+  if (marks >= 50) return 6;
+  if (marks >= 45) return 5;
+  if (marks >= 40) return 4;
+  return 0;
+};
+
+// subject code ke liye credits nikalna
+export const getCredits = (papercode: string): number => {
+  if (subjectCredits[papercode] !== undefined) {
+    return subjectCredits[papercode];
+  }
+  // Fallback: labs/practicals end with P or contain LAB → 1 credit, else 4
+  const upper = papercode.toUpperCase();
+  if (upper.endsWith("P") || upper.includes("LAB")) return 1;
+  return 4;
+};
 
 // helper to filter the subjects fail ones.
-const filterUniqueSubjects = (subjects: SubjectResult[]): SubjectResult[] => {
+export const filterUniqueSubjects = (
+  subjects: SubjectResult[],
+): SubjectResult[] => {
   const subjectMap = new Map<string, SubjectResult>();
 
   subjects.forEach((subject) => {
@@ -74,14 +102,17 @@ export const processResultData = (
       const maxMarks = passedSubjects.length * 100; // Only count passed subjects
       const percentage = maxMarks > 0 ? (totalMarks / maxMarks) * 100 : 0;
 
-      // sgpa calculation
-      const totalGradePoints = passedSubjects.reduce((sum, s) => {
-        return sum + (s.eugpa || 0);
-      }, 0);
-      const sgpa =
-        passedSubjects.length > 0
-          ? totalGradePoints / passedSubjects.length
-          : 0;
+      // sgpa calculation using actual credits and grade points from marks
+      let totalWeightedGP = 0;
+      let totalCredits = 0;
+      passedSubjects.forEach((s) => {
+        const marks = parseFloat(s.moderatedprint) || 0;
+        const gradePoint = marksToGradePoint(marks);
+        const credits = getCredits(s.papercode);
+        totalWeightedGP += gradePoint * credits;
+        totalCredits += credits;
+      });
+      const sgpa = totalCredits > 0 ? totalWeightedGP / totalCredits : 0;
 
       return {
         semester,
