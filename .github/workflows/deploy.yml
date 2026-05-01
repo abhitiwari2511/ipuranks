@@ -24,7 +24,10 @@ jobs:
           port: 22
           script: |
             cd /home/abhit2511/ipuranks/backend
-            git pull
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            git reset --hard
+            git pull origin main
             npm install
-            tsc -b
+            npx tsc -b
             pm2 reload ecosystem.config.cjs
