@@ -43,11 +43,13 @@ const LoginForm = () => {
     captchaImage,
     sessionId,
     loading: captchaLoading,
+    errorMessage: captchaErrorMessage,
     refreshCaptcha,
   } = useCaptcha();
   const { login, loading: loginLoading } = useLogin(sessionId);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formMessage, setFormMessage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,26 +61,41 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const response = await login(data);
+    setFormMessage(null);
 
-    if (response?.data.success) {
+    const result = await login(data);
+
+    if (result.success && result.response.data.success) {
+      setFormMessage(null);
       toast.success("Welcome back!", {
         description: "Analyzing your academic performance...",
         duration: 3000,
       });
+      localStorage.setItem("ipuranks_logged_in", "true");
+      localStorage.setItem(
+        "ipuranks_result_data",
+        JSON.stringify(result.response.data.result),
+      );
+      localStorage.setItem("ipuranks_session_id", sessionId ?? "");
       navigate("/result", {
         state: {
-          resultData: response.data.result,
+          resultData: result.response.data.result,
         },
       });
-    } else {
-      // Refresh captcha on failed login
-      toast.error("Login failed", {
-        description: "Please check your credentials and try again.",
-      });
-      await refreshCaptcha();
-      form.setValue("captcha", "");
+      return;
     }
+
+    if (result.success && !result.response.data.success) {
+      setFormMessage("Wrong password. Please enter the correct password.");
+    } else if (!result.success && result.errorType === "wrong-password") {
+      setFormMessage("Wrong password. Please enter the correct password.");
+    } else if (!result.success && result.errorType === "captcha-expired") {
+      setFormMessage("Captcha expired. Please refresh and try again.");
+    }
+
+    // Refresh captcha on failed login
+    await refreshCaptcha();
+    form.setValue("captcha", "");
   };
 
   return (
@@ -114,6 +131,10 @@ const LoginForm = () => {
                     id="login-rollNo"
                     autoComplete="username"
                     placeholder="Enter enrollment number"
+                    onChange={(event) => {
+                      field.onChange(event);
+                      setFormMessage(null);
+                    }}
                     className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all font-mono"
                   />
                   {fieldState.invalid && (
@@ -125,7 +146,6 @@ const LoginForm = () => {
                 </Field>
               )}
             />
-
             <Controller
               name="password"
               control={form.control}
@@ -144,6 +164,10 @@ const LoginForm = () => {
                       autoComplete="current-password"
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
+                      onChange={(event) => {
+                        field.onChange(event);
+                        setFormMessage(null);
+                      }}
                       className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all pr-10"
                     />
                     <button
@@ -192,13 +216,13 @@ const LoginForm = () => {
                     />
                     <div className="relative group shrink-0">
                       {captchaLoading ? (
-                        <div className="w-25 h-9 rounded-md bg-zinc-800 animate-pulse" />
+                        <div className="h-10 w-32 rounded-md bg-zinc-800 animate-pulse" />
                       ) : (
-                        <div className="relative overflow-hidden rounded-md border border-zinc-800 bg-white">
+                        <div className="relative flex h-10 w-32 items-center justify-center overflow-hidden rounded-md border border-zinc-800 bg-white p-1">
                           <img
                             src={captchaImage || ""}
                             alt="Captcha"
-                            className="h-9 w-28 -mr-1 ml-1 object-cover opacity-90"
+                            className="h-full w-full object-contain opacity-90"
                           />
                         </div>
                       )}
@@ -240,6 +264,11 @@ const LoginForm = () => {
               "Access Dashboard"
             )}
           </Button>
+          {(formMessage || captchaErrorMessage) && (
+            <div className="mt-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-center text-base font-medium text-red-200">
+              {formMessage ?? captchaErrorMessage}
+            </div>
+          )}
         </form>
       </CardContent>
     </Card>

@@ -115,8 +115,6 @@ const loginUser = asyncHandler(async (req, res) => {
     },
   );
 
-  deleteSession(sessionId);
-
   const transformedResult = transformApiResponse(result.data);
 
   res.status(200).json({

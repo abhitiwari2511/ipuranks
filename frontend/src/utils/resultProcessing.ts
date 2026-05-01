@@ -32,6 +32,17 @@ export const getCredits = (papercode: string): number => {
 };
 
 // helper to filter the subjects fail ones.
+const getAttemptTimestamp = (subject: SubjectResult): number => {
+  const parsedDate = Date.parse(subject.declareddate);
+  if (!Number.isNaN(parsedDate)) {
+    return parsedDate;
+  }
+
+  const year = Number(subject.ryear) || 0;
+  const month = Number(subject.rmonth) || 0;
+  return Date.UTC(year, Math.max(month - 1, 0), 1);
+};
+
 export const filterUniqueSubjects = (
   subjects: SubjectResult[],
 ): SubjectResult[] => {
@@ -40,25 +51,15 @@ export const filterUniqueSubjects = (
   subjects.forEach((subject) => {
     const key = subject.papercode;
     const existing = subjectMap.get(key);
-    const currentMarks = parseFloat(subject.moderatedprint) || 0;
 
     if (!existing) {
       subjectMap.set(key, subject);
     } else {
-      const existingMarks = parseFloat(existing.moderatedprint) || 0;
+      const existingTimestamp = getAttemptTimestamp(existing);
+      const currentTimestamp = getAttemptTimestamp(subject);
 
-      //agr pass hai to wo rkho
-      if (currentMarks >= 40 && existingMarks < 40) {
+      if (currentTimestamp >= existingTimestamp) {
         subjectMap.set(key, subject);
-      }
-      // dono fail to jo jyada
-      else if (
-        (currentMarks >= 40 && existingMarks >= 40) ||
-        (currentMarks < 40 && existingMarks < 40)
-      ) {
-        if (currentMarks > existingMarks) {
-          subjectMap.set(key, subject);
-        }
       }
     }
   });

@@ -76,13 +76,37 @@ const StudentInfoHeader = ({
   const navigate = useNavigate();
   const baseURL = import.meta.env.VITE_BACKEND_URL;
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem("ipuranks_logged_in");
+    localStorage.removeItem("ipuranks_result_data");
+    localStorage.removeItem("ipuranks_session_id");
+  };
+
   const handleLogout = async () => {
+    const sessionId = localStorage.getItem("ipuranks_session_id") ?? "";
+    let didLogout = false;
+
     try {
-      await axios.post(`${baseURL}/user/logout`);
-      toast.success("Logged out successfully");
-      navigate("/", { replace: true });
+      await axios.post(
+        `${baseURL}/user/logout`,
+        // {},
+        {
+          headers: {
+            "x-session-id": sessionId,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      didLogout = true;
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      clearLocalStorage();
+      if (didLogout) {
+        toast.success("Logged out successfully");
+      } else {
+        toast.error("Logout failed. Cleared local session.");
+      }
       navigate("/", { replace: true });
     }
   };

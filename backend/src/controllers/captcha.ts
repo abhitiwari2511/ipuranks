@@ -4,7 +4,6 @@ import { wrapper } from "axios-cookiejar-support";
 import axios from "axios";
 import {
   createSession,
-  deleteSession,
   getSession,
 } from "../utils/sessionStore.js";
 

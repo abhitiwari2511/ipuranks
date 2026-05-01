@@ -19,14 +19,12 @@ export interface SemesterCGPA {
   cumulativeCredits: number;
 }
 
-// Filter to keep best attempt for each subject, passed only
-const getUniquePassedSubjects = (semester: SemesterData) =>
-  filterUniqueSubjects(semester.subjects)
-    .filter((s) => (parseFloat(s.moderatedprint) || 0) >= 40)
-    .map((s) => ({
-      marks: parseFloat(s.moderatedprint) || 0,
-      papercode: s.papercode,
-    }));
+// Best attempt per subject across all attempts
+const getBestAttemptSubjects = (subjects: SemesterData[]) =>
+  filterUniqueSubjects(subjects.flatMap((sem) => sem.subjects)).map((s) => ({
+    marks: parseFloat(s.moderatedprint) || 0,
+    papercode: s.papercode,
+  }));
 
 export const calculateProgressiveCGPA = (
   semesters: SemesterData[],
@@ -34,31 +32,35 @@ export const calculateProgressiveCGPA = (
   const sortedSemesters = [...semesters].sort(
     (a, b) => a.semester - b.semester,
   );
-  let cumulativeCredits = 0;
-  let cumulativeGradePoints = 0;
+  return sortedSemesters.map((sem, index) => {
+    const semestersUpToNow = sortedSemesters.slice(0, index + 1);
+    const bestAttempts = getBestAttemptSubjects(semestersUpToNow);
+    const semesterSubjects = filterUniqueSubjects(sem.subjects).map((s) => ({
+      marks: parseFloat(s.moderatedprint) || 0,
+      papercode: s.papercode,
+    }));
 
-  return sortedSemesters.map((sem) => {
-    const passedSubjects = getUniquePassedSubjects(sem);
-
+    let cumulativeCredits = 0;
+    let cumulativeGradePoints = 0;
     let semCredits = 0;
-    let semGradePoints = 0;
-    passedSubjects.forEach((s) => {
-      const credits = getCredits(s.papercode);
-      const gradePoint = marksToGradePoint(s.marks);
-      semCredits += credits;
-      semGradePoints += gradePoint * credits;
+
+    bestAttempts.forEach((subject) => {
+      const credits = getCredits(subject.papercode);
+      const gradePoint = marksToGradePoint(subject.marks);
+      cumulativeCredits += credits;
+      cumulativeGradePoints += gradePoint * credits;
     });
 
-    cumulativeGradePoints += semGradePoints;
-    cumulativeCredits += semCredits;
+    semesterSubjects.forEach((subject) => {
+      semCredits += getCredits(subject.papercode);
+    });
 
-    const sgpa = semCredits > 0 ? semGradePoints / semCredits : 0;
     const cgpa =
       cumulativeCredits > 0 ? cumulativeGradePoints / cumulativeCredits : 0;
 
     return {
       semester: sem.semester,
-      sgpa,
+      sgpa: sem.sgpa,
       cgpa,
       semesterCredits: semCredits,
       cumulativeCredits,

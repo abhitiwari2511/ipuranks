@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import {
   StudentInfoHeader,
@@ -20,29 +20,50 @@ import type { SubjectResult } from "@/types/types";
 const Result = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const resultData: SubjectResult[] = location.state?.resultData;
+  const locationResultData: SubjectResult[] | undefined =
+    location.state?.resultData;
   const [selectedView, setSelectedView] = useState<"overall" | number>(
     "overall",
   );
 
+  const resolvedResultData = useMemo(() => {
+    if (Array.isArray(locationResultData) && locationResultData.length > 0) {
+      return locationResultData;
+    }
+
+    const storedResult = localStorage.getItem("ipuranks_result_data");
+    if (!storedResult) {
+      return null;
+    }
+
+    try {
+      const parsedResult = JSON.parse(storedResult);
+      return Array.isArray(parsedResult) && parsedResult.length > 0
+        ? (parsedResult as SubjectResult[])
+        : null;
+    } catch {
+      return null;
+    }
+  }, [locationResultData]);
+
   useEffect(() => {
-    if (!resultData || !Array.isArray(resultData) || resultData.length === 0) {
+    if (!resolvedResultData) {
       navigate("/", { replace: true });
     }
-  }, [resultData, navigate]);
+  }, [resolvedResultData, navigate]);
 
-  if (!resultData || !Array.isArray(resultData) || resultData.length === 0) {
+  if (!resolvedResultData || resolvedResultData.length === 0) {
     return null;
   }
 
   // Process data first then get any other data
-  const semesters = processResultData(resultData);
+  const semesters = processResultData(resolvedResultData);
   const semesterCumulativeData = calculateSemesterCumulativeData(semesters);
   const yearCumulativeData = calculateYearCumulativeData(semesters);
   const { lineChart, radarChart } = generateChartData(semesters);
 
   // Student info jo mila array me
-  const studentInfo = resultData[0];
+  const studentInfo = resolvedResultData[0];
   const overallCGPA =
     semesterCumulativeData[semesterCumulativeData.length - 1]?.gpa || "0.00";
 
