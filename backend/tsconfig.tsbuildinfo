@@ -1,1 +1,0 @@
-{"root":["./src/app.ts","./src/index.ts","./src/controllers/captcha.ts","./src/controllers/user.ts","./src/routes/captcha.ts","./src/routes/user.ts","./src/utils/asyncHandler.ts","./src/utils/passHash.ts","./src/utils/sessionStore.ts"],"version":"6.0.3"}
