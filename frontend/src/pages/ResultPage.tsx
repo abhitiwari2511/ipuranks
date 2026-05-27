@@ -15,6 +15,7 @@ import {
   calculateYearCumulativeData,
   generateChartData,
 } from "@/utils/resultProcessing";
+import { calculateProgressiveCGPA } from "@/utils/cgpaUtils";
 import type { SubjectResult } from "@/types/types";
 
 const Result = () => {
@@ -61,21 +62,33 @@ const Result = () => {
   const semesterCumulativeData = calculateSemesterCumulativeData(semesters);
   const yearCumulativeData = calculateYearCumulativeData(semesters);
   const { lineChart, radarChart } = generateChartData(semesters);
+  const progressiveCGPA = calculateProgressiveCGPA(semesters);
 
   // Student info jo mila array me
   const studentInfo = resolvedResultData[0];
   const overallCGPA =
     semesterCumulativeData[semesterCumulativeData.length - 1]?.gpa || "0.00";
+  const overallCredits =
+    progressiveCGPA[
+      progressiveCGPA.length - 1
+    ]?.cumulativeCredits?.toString() || "0";
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <div className="container mx-auto p-4 md:p-8 space-y-8">
+    <div className="min-h-screen bg-slate-950">
+      {/* Soft decorative gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-15%] left-[-5%] w-[500px] h-[500px] bg-indigo-500/12 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-violet-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative z-10 container mx-auto p-4 md:p-8 space-y-6 max-w-7xl">
         <StudentInfoHeader
           studentName={studentInfo.stname}
           rollNo={studentInfo.nrollno}
           yearOfAdmission={studentInfo.yoa.toString()}
           instituteName={studentInfo.iname}
           overallCGPA={overallCGPA}
+          overallCredits={overallCredits}
         />
 
         <SemesterSelector

@@ -29,6 +29,7 @@ export interface SemesterData {
   totalMarks: number;
   maxMarks: number;
   percentage: number;
+  semesterCredits: number;
 }
 
 export interface CumulativeData {

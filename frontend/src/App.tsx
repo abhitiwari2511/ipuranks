@@ -17,7 +17,7 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
 
 const App = () => {
   return (
-    <div className="bg-zinc-950 min-h-screen w-full">
+    <div className="bg-[#f8f9fc] min-h-screen w-full">
       <Analytics />
       <Routes>
         <Route path="/" element={<HomePage />} />

@@ -22,28 +22,28 @@ export const sgpaToGrade = (sgpa: number): string => {
 
 export const getGradeColor = (grade: string): string => {
   const colors: Record<string, string> = {
-    O: "text-emerald-400",
-    "A+": "text-green-400",
-    A: "text-lime-400",
-    "B+": "text-yellow-400",
-    B: "text-amber-400",
-    C: "text-orange-400",
-    P: "text-orange-500",
-    F: "text-red-500",
+    O: "text-emerald-300",
+    "A+": "text-green-300",
+    A: "text-teal-300",
+    "B+": "text-amber-300",
+    B: "text-orange-300",
+    C: "text-orange-300",
+    P: "text-rose-300",
+    F: "text-red-300",
   };
-  return colors[grade] || "text-gray-400";
+  return colors[grade] || "text-gray-500";
 };
 
 export const getGradeBgColor = (grade: string): string => {
   const colors: Record<string, string> = {
-    O: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    "A+": "bg-green-500/20 text-green-400 border-green-500/30",
-    A: "bg-lime-500/20 text-lime-400 border-lime-500/30",
-    "B+": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    B: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    C: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    P: "bg-orange-600/20 text-orange-500 border-orange-600/30",
-    F: "bg-red-500/20 text-red-500 border-red-500/30",
+    O: "bg-emerald-500/15 text-emerald-200 border-emerald-400/30",
+    "A+": "bg-green-500/15 text-green-200 border-green-400/30",
+    A: "bg-teal-500/15 text-teal-200 border-teal-400/30",
+    "B+": "bg-amber-500/15 text-amber-200 border-amber-400/30",
+    B: "bg-orange-500/15 text-orange-200 border-orange-400/30",
+    C: "bg-orange-500/15 text-orange-200 border-orange-400/30",
+    P: "bg-rose-500/15 text-rose-200 border-rose-400/30",
+    F: "bg-red-500/15 text-red-200 border-red-400/30",
   };
-  return colors[grade] || "bg-gray-500/20 text-gray-400 border-gray-500/30";
+  return colors[grade] || "bg-slate-800 text-slate-200 border-slate-700";
 };

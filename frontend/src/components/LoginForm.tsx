@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,6 +21,9 @@ import { Input } from "@/components/ui/input";
 import useCaptcha from "@/hooks/useCaptcha";
 import useLogin from "@/hooks/useLogin";
 import { useNavigate } from "react-router-dom";
+import EyeIcon from "@/components/ui/eye-icon";
+import EyeOffIcon from "@/components/ui/eye-off-icon";
+import RefreshIcon from "@/components/ui/refresh-icon";
 
 const formSchema = z.object({
   rollNo: z
@@ -99,16 +101,16 @@ const LoginForm = () => {
   };
 
   return (
-    <Card className="w-full bg-zinc-900 border-zinc-800 shadow-xl overflow-hidden">
-      <CardHeader className="space-y-1 text-center py-3">
-        <CardTitle className="text-4xl font-bold text-white">
+    <Card className="w-full overflow-hidden">
+      <CardHeader className="space-y-1 text-center py-4">
+        <CardTitle className="text-3xl font-bold text-slate-100 font-display">
           Student Login
         </CardTitle>
-        <CardDescription className="text-zinc-500 text-sm">
+        <CardDescription className="text-slate-400 text-sm">
           Access your comprehensive result dashboard
         </CardDescription>
       </CardHeader>
-      <CardContent className="px-4 pb-4">
+      <CardContent className="px-5 pb-5">
         <form
           id="login-form"
           onSubmit={form.handleSubmit(onSubmit)}
@@ -119,11 +121,8 @@ const LoginForm = () => {
               name="rollNo"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="space-y-0.5"
-                >
-                  <FieldLabel className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                <Field data-invalid={fieldState.invalid} className="space-y-1">
+                  <FieldLabel className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Enrollment Number
                   </FieldLabel>
                   <Input
@@ -135,12 +134,12 @@ const LoginForm = () => {
                       field.onChange(event);
                       setFormMessage(null);
                     }}
-                    className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all font-mono"
+                    className="bg-slate-900/60 border-slate-800 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 h-10 text-sm transition-all font-mono-nums rounded-xl text-slate-100 placeholder:text-slate-500"
                   />
                   {fieldState.invalid && (
                     <FieldError
                       errors={[fieldState.error]}
-                      className="text-red-400 text-[10px]"
+                      className="text-red-500 text-[10px]"
                     />
                   )}
                 </Field>
@@ -150,11 +149,8 @@ const LoginForm = () => {
               name="password"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="space-y-0.5"
-                >
-                  <FieldLabel className="text-[10px] -mt-2 font-medium uppercase tracking-wider text-zinc-500">
+                <Field data-invalid={fieldState.invalid} className="space-y-1">
+                  <FieldLabel className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Password
                   </FieldLabel>
                   <div className="relative flex w-full">
@@ -168,28 +164,28 @@ const LoginForm = () => {
                         field.onChange(event);
                         setFormMessage(null);
                       }}
-                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all pr-10"
+                      className="bg-slate-900/60 border-slate-800 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 h-10 text-sm transition-all pr-10 rounded-xl text-slate-100 placeholder:text-slate-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute cursor-pointer right-0 top-0 h-9 w-9 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
+                      className="absolute cursor-pointer right-0 top-0 h-10 w-10 flex items-center justify-center text-slate-500 hover:text-slate-200 transition-colors"
                       tabIndex={-1}
                       aria-label={
                         showPassword ? "Hide password" : "Show password"
                       }
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
+                        <EyeOffIcon size={16} />
                       ) : (
-                        <Eye className="h-4 w-4" />
+                        <EyeIcon size={16} />
                       )}
                     </button>
                   </div>
                   {fieldState.invalid && (
                     <FieldError
                       errors={[fieldState.error]}
-                      className="text-red-400 text-[10px]"
+                      className="text-red-500 text-[10px]"
                     />
                   )}
                 </Field>
@@ -200,11 +196,8 @@ const LoginForm = () => {
               name="captcha"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  className="space-y-0.5"
-                >
-                  <FieldLabel className="text-[10px] -mt-2 font-medium uppercase tracking-wider text-zinc-500">
+                <Field data-invalid={fieldState.invalid} className="space-y-1">
+                  <FieldLabel className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Security Check
                   </FieldLabel>
                   <div className="flex gap-2">
@@ -212,15 +205,15 @@ const LoginForm = () => {
                       {...field}
                       id="login-captcha"
                       placeholder="Enter Captcha"
-                      className="bg-zinc-950 border-zinc-800 focus:border-zinc-700 h-9 text-sm transition-all flex-1 font-mono tracking-widest text-center"
+                      className="bg-slate-900/60 border-slate-800 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 h-10 text-sm transition-all flex-1 font-mono-nums tracking-widest text-center rounded-xl text-slate-100 placeholder:text-slate-500"
                     />
                     <div className="relative group shrink-0">
                       {captchaLoading ? (
-                        <div className="h-10 w-32 rounded-md bg-zinc-800 animate-pulse" />
+                        <div className="h-10 w-32 rounded-xl bg-slate-800/60 animate-pulse" />
                       ) : (
-                        <div className="relative flex h-10 w-32 items-center justify-center overflow-hidden rounded-md border border-zinc-800 bg-white p-1">
+                        <div className="relative flex h-10 w-32 items-center justify-center overflow-hidden rounded-xl border border-slate-800 bg-slate-950/70 p-1">
                           <img
-                            src={captchaImage || ""}
+                            src={captchaImage || undefined}
                             alt="Captcha"
                             className="h-full w-full object-contain opacity-90"
                           />
@@ -230,12 +223,13 @@ const LoginForm = () => {
                         type="button"
                         size="icon"
                         variant="ghost"
-                        className="absolute cursor-pointer -right-2 -top-2 h-8 w-8 rounded-full bg-zinc-800 text-zinc-400 hover:text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute cursor-pointer -right-2 -top-2 h-7 w-7 rounded-full bg-slate-950 border border-slate-800 text-slate-400 hover:text-indigo-300 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={refreshCaptcha}
                         disabled={captchaLoading}
                       >
-                        <RefreshCw
-                          className={`h-2.5 w-2.5 ${captchaLoading ? "animate-spin" : ""}`}
+                        <RefreshIcon
+                          size={12}
+                          className={captchaLoading ? "animate-spin" : ""}
                         />
                       </Button>
                     </div>
@@ -243,7 +237,7 @@ const LoginForm = () => {
                   {fieldState.invalid && (
                     <FieldError
                       errors={[fieldState.error]}
-                      className="text-red-400 text-[10px]"
+                      className="text-red-500 text-[10px]"
                     />
                   )}
                 </Field>
@@ -253,19 +247,19 @@ const LoginForm = () => {
 
           <Button
             type="submit"
-            className="w-full bg-white hover:bg-zinc-200 mt-5 text-zinc-950 font-bold text-sm h-9 transition-all active:scale-[0.98]"
+            className="w-full bg-indigo-500 hover:bg-indigo-400 mt-5 text-white font-bold text-sm h-10 transition-all active:scale-[0.98] rounded-xl shadow-md shadow-indigo-500/30"
             disabled={loginLoading}
           >
             {loginLoading ? (
               <span className="flex items-center gap-2">
-                <RefreshCw className="h-3 w-3 animate-spin" /> Verifying...
+                <RefreshIcon size={12} className="animate-spin" /> Verifying...
               </span>
             ) : (
               "Access Dashboard"
             )}
           </Button>
           {(formMessage || captchaErrorMessage) && (
-            <div className="mt-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-center text-base font-medium text-red-200">
+            <div className="mt-3 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-center text-sm font-medium text-red-200">
               {formMessage ?? captchaErrorMessage}
             </div>
           )}

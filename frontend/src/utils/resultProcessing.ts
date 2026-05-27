@@ -100,6 +100,10 @@ export const processResultData = (
         return sum + moderated;
       }, 0);
 
+      const semesterCredits = uniqueSubjects.reduce((sum, s) => {
+        return sum + getCredits(s.papercode);
+      }, 0);
+
       const maxMarks = passedSubjects.length * 100; // Only count passed subjects
       const percentage = maxMarks > 0 ? (totalMarks / maxMarks) * 100 : 0;
 
@@ -122,6 +126,7 @@ export const processResultData = (
         totalMarks,
         maxMarks,
         percentage,
+        semesterCredits,
       };
     })
     .sort((a, b) => a.semester - b.semester);

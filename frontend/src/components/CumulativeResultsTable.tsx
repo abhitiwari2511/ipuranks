@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { CumulativeData } from "@/types/types";
-import { TrendingUp, Calendar, BookOpen } from "lucide-react";
+import ChartBarIcon from "@/components/ui/chart-bar-icon";
+import BookIcon from "@/components/ui/book-icon";
+import HistoryCircleIcon from "@/components/ui/history-circle-icon";
 
 interface CumulativeResultsTableProps {
   semesterData: CumulativeData[];
@@ -29,41 +31,45 @@ const CumulativeResultsTable = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
     >
-      <Card className="shadow-xl bg-zinc-900 border-zinc-800">
-        <CardHeader className="border-b border-zinc-800">
+      <Card className="hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="border-b border-slate-800/70">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-xl font-semibold text-white uppercase tracking-wide">
-                <TrendingUp className="w-5 h-5 text-emerald-400" />
-                Cumulative Result Breakdown
-              </CardTitle>
-              <CardDescription className="text-zinc-500">
-                Progressive academic performance
-              </CardDescription>
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 bg-indigo-500/15 rounded-lg">
+                <ChartBarIcon size={16} className="text-indigo-200" />
+              </div>
+              <div>
+                <CardTitle className="text-lg font-semibold text-slate-100 tracking-tight font-display">
+                  Cumulative Data Breakdown
+                </CardTitle>
+                <CardDescription className="text-slate-400 text-sm">
+                  Comprehensive academic timeline summation
+                </CardDescription>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button
                 size="sm"
                 onClick={() => setViewMode("semester")}
-                className={`transition-all duration-200 ${
+                className={`transition-all duration-200 rounded-md ${
                   viewMode === "semester"
-                    ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                    : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+                    ? "bg-indigo-500 hover:bg-indigo-400 text-white shadow-md shadow-indigo-500/30"
+                    : "bg-black/10 text-slate-300 border-white/10 hover:bg-white/5 hover:text-slate-100"
                 }`}
               >
-                <BookOpen className="w-4 h-4 mr-1" />
+                <BookIcon size={16} className="mr-1" />
                 Semester
               </Button>
               <Button
                 size="sm"
                 onClick={() => setViewMode("year")}
-                className={`transition-all duration-200 ${
+                className={`transition-all duration-200 rounded-md ${
                   viewMode === "year"
-                    ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                    : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
+                    ? "bg-indigo-500 hover:bg-indigo-400 text-white shadow-md shadow-indigo-500/30"
+                    : "bg-black/10 text-slate-300 border-white/10 hover:bg-white/5 hover:text-slate-100"
                 }`}
               >
-                <Calendar className="w-4 h-4 mr-1" />
+                <HistoryCircleIcon size={16} className="mr-1" />
                 Year
               </Button>
             </div>
@@ -73,17 +79,17 @@ const CumulativeResultsTable = ({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="text-left p-4 font-semibold text-zinc-500 text-xs uppercase tracking-wider">
+                <tr className="border-b border-slate-800/70">
+                  <th className="text-left p-4 font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
                     {viewMode === "semester" ? "Semester" : "Year"}
                   </th>
-                  <th className="text-left p-4 font-semibold text-zinc-500 text-xs uppercase tracking-wider">
+                  <th className="text-left p-4 font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
                     Marks
                   </th>
-                  <th className="text-left p-4 font-semibold text-zinc-500 text-xs uppercase tracking-wider">
+                  <th className="text-left p-4 font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
                     Percentage
                   </th>
-                  <th className="text-left p-4 font-semibold text-zinc-500 text-xs uppercase tracking-wider">
+                  <th className="text-left p-4 font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
                     CGPA
                   </th>
                 </tr>
@@ -94,36 +100,38 @@ const CumulativeResultsTable = ({
                   return (
                     <motion.tr
                       key={`${viewMode}-${index}`}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className={`border-b border-zinc-800/50 transition-colors ${
-                        isLast ? "" : "hover:bg-zinc-800/30"
+                      transition={{ delay: index * 0.04 }}
+                      className={`border-b border-slate-800/60 transition-colors ${
+                        isLast ? "bg-indigo-500/10" : "hover:bg-slate-900/60"
                       }`}
                     >
                       <td className="p-4">
                         <span
-                          className={`font-medium ${
-                            isLast ? "text-emerald-400" : "text-zinc-300"
+                          className={`font-medium text-sm ${
+                            isLast
+                              ? "text-indigo-300 font-semibold"
+                              : "text-slate-200"
                           }`}
                         >
                           {row.semester}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="font-medium text-zinc-400">
+                        <span className="font-medium text-slate-300 font-mono-nums text-sm">
                           {row.marks}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="text-zinc-300 font-medium">
+                        <span className="text-slate-200 font-medium font-mono-nums text-sm">
                           {row.percentage} %
                         </span>
                       </td>
                       <td className="p-4">
                         <span
-                          className={`font-bold ${
-                            isLast ? "text-lime-400" : "text-lime-400"
+                          className={`font-bold font-mono-nums text-sm ${
+                            isLast ? "text-emerald-300" : "text-violet-300"
                           }`}
                         >
                           {row.gpa}
