@@ -119,7 +119,7 @@ const StudentInfoHeader = ({
         <CardHeader className="pb-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-indigo-500/15 border border-indigo-500/30 rounded-2xl">
+              <div className="p-3">
                 <BookIcon size={28} className="text-indigo-200" />
               </div>
               <div>

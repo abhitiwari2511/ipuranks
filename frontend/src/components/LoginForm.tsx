@@ -209,13 +209,13 @@ const LoginForm = () => {
                     />
                     <div className="relative group shrink-0">
                       {captchaLoading ? (
-                        <div className="h-10 w-32 rounded-xl bg-slate-800/60 animate-pulse" />
+                        <div className="h-10 w-32 rounded-xl border border-slate-800/70 bg-slate-800/60 animate-pulse" />
                       ) : (
-                        <div className="relative flex h-10 w-32 items-center justify-center overflow-hidden rounded-xl border border-slate-800 bg-slate-950/70 p-1">
+                        <div className="relative flex h-10 w-32 items-center justify-center overflow-hidden rounded-xl border border-slate-800 bg-slate-950/70">
                           <img
                             src={captchaImage || undefined}
                             alt="Captcha"
-                            className="h-full w-full object-contain opacity-90"
+                            className="h-full w-full object-cover opacity-90"
                           />
                         </div>
                       )}

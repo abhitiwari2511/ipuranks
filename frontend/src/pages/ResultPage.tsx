@@ -81,7 +81,7 @@ const Result = () => {
         <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-violet-500/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 container mx-auto p-4 md:p-8 space-y-6 max-w-7xl">
+      <div className="relative z-10 container mx-auto p-3 md:p-8 space-y-6 max-w-7xl">
         <StudentInfoHeader
           studentName={studentInfo.stname}
           rollNo={studentInfo.nrollno}

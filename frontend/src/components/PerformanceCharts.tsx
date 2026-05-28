@@ -63,11 +63,11 @@ const PerformanceCharts = ({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.3 }}
-      className="grid grid-cols-1 lg:grid-cols-2 gap-5"
+      className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5"
     >
       {/* ── Percentage Trend ─────────────────────────────── */}
-      <Card className="hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-2">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="px-4 pb-2 sm:px-6">
           <CardTitle className="text-lg font-semibold text-slate-100 tracking-tight font-display">
             Academic Performance
           </CardTitle>
@@ -75,10 +75,10 @@ const PerformanceCharts = ({
             Your percentage progression trajectory
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 sm:pb-6">
           <div tabIndex={-1} className="outline-none">
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={lineChartData}>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={lineChartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient
                     id="colorPercentage"
@@ -100,6 +100,7 @@ const PerformanceCharts = ({
                   dataKey="name"
                   stroke="#94a3b8"
                   fontSize={12}
+                  tickMargin={15}
                   tickLine={false}
                   axisLine={false}
                 />
@@ -109,6 +110,7 @@ const PerformanceCharts = ({
                   tickLine={false}
                   axisLine={false}
                   domain={[0, 100]}
+                  width={32}
                 />
                 <Tooltip
                   contentStyle={tooltipStyle}
@@ -150,8 +152,8 @@ const PerformanceCharts = ({
       </Card>
 
       {/* ── SGPA Trend ───────────────────────────────────── */}
-      <Card className="hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-2">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="px-4 pb-2 sm:px-6">
           <CardTitle className="text-lg font-semibold text-slate-100 tracking-tight font-display">
             SGPA Tracker
           </CardTitle>
@@ -159,10 +161,10 @@ const PerformanceCharts = ({
             Semester Grade Point Average (out of 10)
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 sm:pb-6">
           <div tabIndex={-1} className="outline-none">
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={lineChartData}>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={lineChartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSgpa" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15} />
@@ -180,6 +182,7 @@ const PerformanceCharts = ({
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  tickMargin={15}
                 />
                 <YAxis
                   stroke="#94a3b8"
@@ -187,6 +190,7 @@ const PerformanceCharts = ({
                   tickLine={false}
                   axisLine={false}
                   domain={[0, 10]}
+                  width={32}
                 />
                 <Tooltip
                   contentStyle={tooltipStyle}
@@ -228,8 +232,8 @@ const PerformanceCharts = ({
       </Card>
 
       {/* ── Radar Chart ──────────────────────────────────── */}
-      <Card className="hover:shadow-lg transition-shadow duration-300">
-        <CardHeader className="pb-2">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="px-4 pb-2 sm:px-6">
           <CardTitle className="text-lg font-semibold text-slate-100 tracking-tight font-display">
             Performance Constellation
           </CardTitle>
@@ -237,7 +241,7 @@ const PerformanceCharts = ({
             Semester-wise proficiency analysis
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 sm:pb-6">
           <div tabIndex={-1} className="outline-none">
             <ResponsiveContainer width="100%" height={280}>
               <RadarChart data={radarChartData}>
@@ -272,8 +276,8 @@ const PerformanceCharts = ({
       </Card>
 
       {/* ── Bar Chart (semester subjects / overall SGPA) ── */}
-      <Card className="hover:shadow-lg transition-shadow duration-300 lg:col-span-2">
-        <CardHeader className="pb-2">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 lg:col-span-2">
+        <CardHeader className="px-4 pb-2 sm:px-6">
           <CardTitle className="text-lg font-semibold text-slate-100 tracking-tight font-display">
             {selectedSemester
               ? "Subject Insight Statistics"
@@ -285,9 +289,9 @@ const PerformanceCharts = ({
               : "Bird's-eye view of your SGPA consistency"}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 sm:pb-6">
           <div tabIndex={-1} className="outline-none">
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={280}>
               {semesterBarData ? (
                 <BarChart data={semesterBarData} barCategoryGap="15%">
                   <defs>
@@ -390,7 +394,7 @@ const PerformanceCharts = ({
                   />
                 </BarChart>
               ) : (
-                <BarChart data={lineChartData} barCategoryGap="20%">
+                <BarChart data={lineChartData} barCategoryGap="20%" margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient
                       id="barGradient"
@@ -418,6 +422,7 @@ const PerformanceCharts = ({
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
+                    tickMargin={10}
                   />
                   <YAxis
                     stroke="#94a3b8"
@@ -425,6 +430,7 @@ const PerformanceCharts = ({
                     tickLine={false}
                     axisLine={false}
                     domain={[0, 10]}
+                    width={32}
                   />
                   <Tooltip
                     cursor={{ fill: "rgba(99, 102, 241, 0.12)" }}
@@ -436,7 +442,7 @@ const PerformanceCharts = ({
                     ]}
                   />
                   <Legend
-                    wrapperStyle={{ paddingTop: "10px" }}
+                    wrapperStyle={{ paddingTop: "16px" }}
                     formatter={(value) => (
                       <span style={{ color: "#94a3b8", fontSize: 13 }}>
                         {value}
