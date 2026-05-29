@@ -23,8 +23,9 @@ const OverallGrades = ({ semesters }: OverallGradesProps) => {
   const sortedSemesters = [...semesters].sort(
     (a, b) => a.semester - b.semester,
   );
-  const overallCredits =
-    progressiveCGPA[progressiveCGPA.length - 1]?.cumulativeCredits || 0;
+  const lastProg = progressiveCGPA[progressiveCGPA.length - 1];
+  const overallCreditsEarned = lastProg?.cumulativeCredits || 0;
+  const overallCreditsPossible = lastProg?.cumulativeCreditsPossible || 0;
 
   return (
     <motion.div
@@ -47,7 +48,7 @@ const OverallGrades = ({ semesters }: OverallGradesProps) => {
               </CardDescription>
             </div>
             <Badge className="bg-emerald-500/15 text-emerald-200 border-emerald-500/30 text-xs px-3 py-1 border self-start">
-              Total Credits: {overallCredits}
+              Total Credits: {overallCreditsEarned}/{overallCreditsPossible}
             </Badge>
           </div>
         </CardHeader>
@@ -109,13 +110,18 @@ const OverallGrades = ({ semesters }: OverallGradesProps) => {
                       <div className="flex items-center justify-between text-sm mt-1.5">
                         <span className="text-slate-400">Credits</span>
                         <span className="text-slate-200 font-medium font-mono-nums">
-                          {cgpaData?.semesterCredits ?? sem.semesterCredits}
+                          {cgpaData?.semesterCredits ?? sem.semesterCredits}/
+                          {cgpaData?.semesterCreditsPossible ??
+                            sem.semesterCreditsPossible ??
+                            0}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm mt-1.5">
                         <span className="text-slate-400">Total Credits</span>
                         <span className="text-emerald-300 font-medium font-mono-nums">
-                          {cgpaData?.cumulativeCredits ?? overallCredits}
+                          {cgpaData?.cumulativeCredits ?? overallCreditsEarned}/
+                          {cgpaData?.cumulativeCreditsPossible ??
+                            overallCreditsPossible}
                         </span>
                       </div>
                     </div>

@@ -29,7 +29,10 @@ export interface SemesterData {
   totalMarks: number;
   maxMarks: number;
   percentage: number;
+  // credits earned by passing subjects in this semester
   semesterCredits: number;
+  // total possible credits for this semester (sum of all subject credits)
+  semesterCreditsPossible?: number;
 }
 
 export interface CumulativeData {

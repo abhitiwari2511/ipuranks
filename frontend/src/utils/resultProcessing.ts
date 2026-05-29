@@ -95,16 +95,24 @@ export const processResultData = (
         return marks >= 40;
       });
 
-      const totalMarks = passedSubjects.reduce((sum, s) => {
+      // total marks across all unique subjects (include failed ones)
+      const totalMarks = uniqueSubjects.reduce((sum, s) => {
         const moderated = parseFloat(s.moderatedprint) || 0;
         return sum + moderated;
       }, 0);
 
-      const semesterCredits = uniqueSubjects.reduce((sum, s) => {
+      // Count credits only for subjects the student has passed
+      const semesterCredits = passedSubjects.reduce((sum, s) => {
         return sum + getCredits(s.papercode);
       }, 0);
 
-      const maxMarks = passedSubjects.length * 100; // Only count passed subjects
+      // total possible credits for the semester (all unique subjects)
+      const semesterCreditsPossible = uniqueSubjects.reduce((sum, s) => {
+        return sum + getCredits(s.papercode);
+      }, 0);
+
+      // each subject is out of 100; count all unique subjects for possible max
+      const maxMarks = uniqueSubjects.length * 100;
       const percentage = maxMarks > 0 ? (totalMarks / maxMarks) * 100 : 0;
 
       // sgpa calculation using actual credits and grade points from marks
@@ -127,6 +135,7 @@ export const processResultData = (
         maxMarks,
         percentage,
         semesterCredits,
+        semesterCreditsPossible,
       };
     })
     .sort((a, b) => a.semester - b.semester);
@@ -211,7 +220,7 @@ export const generateChartData = (semesters: SemesterData[]) => {
     })),
     radarChart: semesters.map((sem) => ({
       semester: `S${sem.semester}`,
-      performance: parseFloat(sem.sgpa.toFixed(1)),
+      performance: parseFloat(sem.sgpa.toFixed(2)),
     })),
   };
 };

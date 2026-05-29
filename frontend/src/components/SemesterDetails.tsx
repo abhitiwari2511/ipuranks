@@ -49,7 +49,8 @@ const SemesterDetails = ({ semester }: SemesterDetailsProps) => {
                 {semester.totalMarks} / {semester.maxMarks}
               </Badge>
               <Badge className="bg-emerald-500/15 text-emerald-200 border-emerald-500/30 text-xs px-3 py-1 border">
-                Credits: {semester.semesterCredits}
+                Credits: {semester.semesterCredits} /{" "}
+                {semester.semesterCreditsPossible ?? 0}
               </Badge>
             </div>
           </div>

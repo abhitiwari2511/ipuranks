@@ -68,10 +68,10 @@ const Result = () => {
   const studentInfo = resolvedResultData[0];
   const overallCGPA =
     semesterCumulativeData[semesterCumulativeData.length - 1]?.gpa || "0.00";
-  const overallCredits =
-    progressiveCGPA[
-      progressiveCGPA.length - 1
-    ]?.cumulativeCredits?.toString() || "0";
+  const lastProg = progressiveCGPA[progressiveCGPA.length - 1];
+  const overallCredits = lastProg
+    ? `${lastProg.cumulativeCredits}/${lastProg.cumulativeCreditsPossible ?? 0}`
+    : "0/0";
 
   return (
     <div className="min-h-screen bg-slate-950">
