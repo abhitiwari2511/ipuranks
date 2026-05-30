@@ -115,10 +115,11 @@ export const processResultData = (
       const maxMarks = uniqueSubjects.length * 100;
       const percentage = maxMarks > 0 ? (totalMarks / maxMarks) * 100 : 0;
 
-      // sgpa calculation using actual credits and grade points from marks
+      // sgpa calculation: numerator = sum(Ci * Gi) for all unique subjects (Gi may be 0 for failed)
+      // denominator = sum(Ci) for all unique subjects (include credits even if course is failed)
       let totalWeightedGP = 0;
       let totalCredits = 0;
-      passedSubjects.forEach((s) => {
+      uniqueSubjects.forEach((s) => {
         const marks = parseFloat(s.moderatedprint) || 0;
         const gradePoint = marksToGradePoint(marks);
         const credits = getCredits(s.papercode);

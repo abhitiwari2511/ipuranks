@@ -24,7 +24,7 @@ const OverallGrades = ({ semesters }: OverallGradesProps) => {
     (a, b) => a.semester - b.semester,
   );
   const lastProg = progressiveCGPA[progressiveCGPA.length - 1];
-  const overallCreditsEarned = lastProg?.cumulativeCredits || 0;
+  const overallCreditsEarned = lastProg?.cumulativeCreditsEarned || 0;
   const overallCreditsPossible = lastProg?.cumulativeCreditsPossible || 0;
 
   return (
@@ -119,7 +119,9 @@ const OverallGrades = ({ semesters }: OverallGradesProps) => {
                       <div className="flex items-center justify-between text-sm mt-1.5">
                         <span className="text-slate-400">Total Credits</span>
                         <span className="text-emerald-300 font-medium font-mono-nums">
-                          {cgpaData?.cumulativeCredits ?? overallCreditsEarned}/
+                          {cgpaData?.cumulativeCreditsEarned ??
+                            overallCreditsEarned}
+                          /
                           {cgpaData?.cumulativeCreditsPossible ??
                             overallCreditsPossible}
                         </span>

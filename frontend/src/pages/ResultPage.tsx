@@ -70,7 +70,7 @@ const Result = () => {
     semesterCumulativeData[semesterCumulativeData.length - 1]?.gpa || "0.00";
   const lastProg = progressiveCGPA[progressiveCGPA.length - 1];
   const overallCredits = lastProg
-    ? `${lastProg.cumulativeCredits}/${lastProg.cumulativeCreditsPossible ?? 0}`
+    ? `${lastProg.cumulativeCreditsEarned}/${lastProg.cumulativeCreditsPossible ?? 0}`
     : "0/0";
 
   return (
