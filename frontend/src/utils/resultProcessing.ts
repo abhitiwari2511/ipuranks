@@ -8,6 +8,24 @@ import subjectCreditsData from "@/data/subjectCredits.json";
 
 const subjectCredits: Record<string, number> = subjectCreditsData;
 
+const normalizePaperCode = (code: string): string =>
+  code.replace(/-/g, "").toUpperCase();
+
+const subjectCreditsExact: Record<string, number> = {};
+const subjectCreditsNormalized: Record<string, number> = {};
+
+Object.entries(subjectCredits).forEach(([code, credits]) => {
+  const upper = code.toUpperCase();
+  if (subjectCreditsExact[upper] === undefined) {
+    subjectCreditsExact[upper] = credits;
+  }
+
+  const normalized = normalizePaperCode(code);
+  if (subjectCreditsNormalized[normalized] === undefined) {
+    subjectCreditsNormalized[normalized] = credits;
+  }
+});
+
 //total marks to IPU grade point
 export const marksToGradePoint = (marks: number): number => {
   if (marks >= 90) return 10;
@@ -22,11 +40,17 @@ export const marksToGradePoint = (marks: number): number => {
 
 // subject code ke liye credits nikalna
 export const getCredits = (papercode: string): number => {
-  if (subjectCredits[papercode] !== undefined) {
-    return subjectCredits[papercode];
+  const upper = papercode.toUpperCase();
+  const normalized = normalizePaperCode(papercode);
+
+  if (subjectCreditsExact[upper] !== undefined) {
+    return subjectCreditsExact[upper];
+  }
+
+  if (subjectCreditsNormalized[normalized] !== undefined) {
+    return subjectCreditsNormalized[normalized];
   }
   // Fallback: labs/practicals end with P or contain LAB → 1 credit, else 4
-  const upper = papercode.toUpperCase();
   if (upper.endsWith("P") || upper.includes("LAB")) return 1;
   return 4;
 };
@@ -49,7 +73,7 @@ export const filterUniqueSubjects = (
   const subjectMap = new Map<string, SubjectResult>();
 
   subjects.forEach((subject) => {
-    const key = subject.papercode;
+    const key = normalizePaperCode(subject.papercode);
     const existing = subjectMap.get(key);
 
     if (!existing) {
