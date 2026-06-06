@@ -8,7 +8,7 @@ const asyncHandler = (
       await fn(req, res, next);
     } catch (error: ErrorRequestHandler | any) {
       return res
-        .status(error.code || 500)
+        .status(500)
         .json({ message: "Internal Server Error", error, success: "false" });
     }
   };

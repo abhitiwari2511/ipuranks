@@ -1,4 +1,4 @@
-name: Deploy my app on vps
+name: Build and Deploy Backend
 
 on:
   push:
@@ -6,6 +6,10 @@ on:
       - main
     paths:
       - "backend/**"
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-and-deploy:
@@ -15,19 +19,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Build typescript
+        working-directory: ./backend
+        run: npm run build
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/ipuranks-backend:latest
+   
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
           script: |
-            cd /home/abhit2511/ipuranks/backend
-            export NVM_DIR="$HOME/.nvm"
-            source "$NVM_DIR/nvm.sh"
-            git reset --hard
-            git pull origin main
-            npm install
-            npx tsc -b
-            pm2 reload ecosystem.config.cjs
+            cd /root/ipuranks
+            docker compose pull
+            docker compose up -d --remove-orphans

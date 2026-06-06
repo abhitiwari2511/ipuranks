@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r dotenv/config --experimental-json-modules dist/index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules dist/index.js",
+    "build": "tsc -b",
+    "start": "node -r dotenv/config --experimental-json-modules dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,10 +19,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "nodemon": "^3.1.11",
     "tough-cookie": "^6.0.0"
   },
   "devDependencies": {
+    "nodemon": "^3.1.11",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.3.3",
