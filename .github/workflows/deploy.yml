@@ -54,6 +54,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /root/ipuranks
+            cd /home/abhi/ipuranks
             docker compose pull
             docker compose up -d --remove-orphans
