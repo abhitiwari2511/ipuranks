@@ -90,7 +90,7 @@ const loginUser = asyncHandler(async (req, res) => {
   form.append("captcha", captcha);
 
   // post data login krne ke liye
-  const respone = await client.post(`${baseUrl}/Login`, form.toString(), {
+  const response = await client.post(`${baseUrl}/login`, form.toString(), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Referer: `${baseUrl}/login.jsp`,
@@ -99,23 +99,47 @@ const loginUser = asyncHandler(async (req, res) => {
     validateStatus: (s) => s === 302 || s === 200,
   });
 
-  if (respone.status !== 302) {
+  console.log("Login response status:", response.status);
+
+  if (response.status !== 302) {
     return res.status(401).json({ message: "Login Failed" });
   }
 
   //student data
-  const data = await client.get(`${baseUrl}/student/studenthome.jsp`);
+  await client.get(`${baseUrl}/student/studenthome`);
 
-  const result = await client.get(
-    `${baseUrl}/StudentSearchProcess?flag=2&euno=100`,
-    {
-      headers: {
-        Referer: `${baseUrl}/student/studenthome.jsp`,
-      },
+  const result = await client.get(`${baseUrl}/student/search`, {
+    params: {
+      flag: 2,
+      euno: 100,
     },
-  );
+    headers: {
+      Referer: `${baseUrl}/student/studenthome`,
+      Accept: "*/*",
+    },
+  });
 
-  const transformedResult = transformApiResponse(result.data);
+  let resultData: NewApiResponse;
+  try {
+    if (typeof result.data?.message === "string") {
+      resultData = JSON.parse(result.data.message);
+    } else {
+      resultData = result.data as NewApiResponse;
+    }
+  } catch (error) {
+    console.error(
+      "message was not valid JSON:",
+      String(result.data?.message).slice(0, 300),
+    );
+    return res.status(502).json({ message: "Unexpected result format" });
+  }
+
+  if (!resultData?.stresult || !resultData.stprofile) {
+    console.error("unexpected payload keys:", Object.keys(resultData ?? {}));
+    return res.status(502).json({ message: "Unexpected result format" });
+  }
+
+  const transformedResult = transformApiResponse(resultData);
 
   res.status(200).json({
     success: true,
